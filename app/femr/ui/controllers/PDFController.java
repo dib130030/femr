@@ -449,11 +449,11 @@ public class PDFController extends Controller {
 
                     table.addCell(cell);
 
-                    Paragraph replacedMedName = new Paragraph(prescription.getName(), getValueFont());
+                    Paragraph replacedMedName = new Paragraph(getPrescriptionText(prescription), getValueFont());
                     cell = new PdfPCell(replacedMedName);
                     table.addCell(cell);
                 } else {
-                    Paragraph medName = new Paragraph(prescription.getName(), getValueFont());
+                    Paragraph medName = new Paragraph(getPrescriptionText(prescription), getValueFont());
                     cell = new PdfPCell(medName);
                     table.addCell(cell);
 
@@ -643,6 +643,28 @@ public class PDFController extends Controller {
      */
     private Font getValueFont(){
         return new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, BaseColor.BLACK);
+    }
+
+    private String getPrescriptionText(PrescriptionItem prescription) {
+        StringBuilder med = new StringBuilder();
+        if (prescription.getAmount() != null)
+            med.append(prescription.getAmount());
+        med.append(" ");
+        med.append( prescription.getName());
+        med.append(" (");
+        med.append(prescription.getMedicationForm());
+        med.append(") ");
+        for (MedicationItem.ActiveIngredient i : prescription.getMedicationActiveDrugs())
+        {
+            med.append("[");
+            med.append(i.getName());
+            med.append(" ");
+            med.append(i.getValue());
+            med.append(" ");
+            med.append(i.getUnit());
+            med.append("] ");
+        }
+        return med.toString().trim();
     }
 
     private Phrase getStyledPhrase(String title, String value) {
