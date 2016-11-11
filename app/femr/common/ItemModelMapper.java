@@ -137,10 +137,14 @@ public class ItemModelMapper implements IItemModelMapper {
 
         MissionTripItem missionTripItem = new MissionTripItem();
         missionTripItem.setId(missionTrip.getId());
-        if (missionTrip.getMissionCity() != null)
-            missionTripItem.setTripCity(missionTrip.getMissionCity().getName());
-        if (missionTrip.getMissionCity() != null)
-            missionTripItem.setTripCountry(missionTrip.getMissionCity().getMissionCountry().getName());
+
+        final IMissionCity missionCity = missionTrip.getMissionCity();
+        if (missionCity != null) {
+            missionTripItem.setTripCity(missionCity.getName());
+            if (missionCity.getMissionCountry() != null)
+                missionTripItem.setTripCountry(missionCity.getMissionCountry().getName());
+        }
+
         missionTripItem.setTripStartDate(missionTrip.getStartDate());
         missionTripItem.setFriendlyTripStartDate(dateUtils.getFriendlyDate(missionTrip.getStartDate()));
         missionTripItem.setTripEndDate(missionTrip.getEndDate());
@@ -427,6 +431,46 @@ public class ItemModelMapper implements IItemModelMapper {
         tabItem.setRightColumnSize(rightColumnSize);
 
         return tabItem;
+    }
+
+    public class TabFieldItemBuilder {
+        private String type;
+        private String size;
+        private Integer order;
+        private String placeholder;
+        private String value;
+        private String chiefComplaint;
+        private String username;
+
+        public void setType(final String type) { this.type = type; }
+        public void setSize(final String size) { this.size = size; }
+        public void setOrder(int order) { this.order = order; }
+        public void setPlaceholder(final String placeholder) { this.placeholder = placeholder; }
+        public void setValue(final String value) { this.value = value; }
+        public void setChiefComplaint(final String chiefComplaint) { this.chiefComplaint = chiefComplaint; }
+        public void setUsername(final String username) { this.username = username; }
+
+        public TabFieldItem Create(final String name, boolean isCustom) {
+            TabFieldItem tabFieldItem = new TabFieldItem();
+            tabFieldItem.setName(name);
+            if (StringUtils.isNotNullOrWhiteSpace(this.placeholder))
+                tabFieldItem.setPlaceholder(this.placeholder);
+            if (this.order != null)
+                tabFieldItem.setOrder(this.order);
+            if (StringUtils.isNotNullOrWhiteSpace(this.size))
+                tabFieldItem.setSize(this.size);
+            if (StringUtils.isNotNullOrWhiteSpace(this.type))
+                tabFieldItem.setType(this.type);
+            if (StringUtils.isNotNullOrWhiteSpace(this.value))
+                tabFieldItem.setValue(this.value);
+            if (StringUtils.isNotNullOrWhiteSpace(this.chiefComplaint))
+                tabFieldItem.setChiefComplaint(this.chiefComplaint);
+            if (StringUtils.isNotNullOrWhiteSpace(this.username))
+                tabFieldItem.setUserName(this.username);
+            tabFieldItem.setIsCustom(isCustom);
+
+            return tabFieldItem;
+        }
     }
 
     /**
